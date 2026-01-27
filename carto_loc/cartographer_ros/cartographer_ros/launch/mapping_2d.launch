@@ -9,7 +9,7 @@
       output="screen">
   </node>
 
-  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros" type="cartographer_occupancy_grid_node" args="-resolution 0.02" />
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros" type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
   <node name="rviz" pkg="rviz" type="rviz" required="false" args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz" />
   <include file="$(find yunshen_robot_navigation)/launch/description_for_sim.launch" />
 </launch>
