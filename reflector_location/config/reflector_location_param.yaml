@@ -1,0 +1,42 @@
+    # mode selection: 
+    # 0 - pure localization
+    # 1 - build new ref map simultaneously with carto mapping 
+    # 2 - build new ref map use ref pose
+    # 3 - build new ref map use carto pose
+    # 4 - append existing ref map simultaneously with carto mapping
+    # 5 - append existing ref map use ref pose
+    # 6 - append existing ref map use carto pose
+    # 99 - finish mapping, only used by service name "/mapping_order"
+    mapping_mode: 4
+    
+    # node_option
+    use_imu: false
+    use_odom: true
+    use_location_map: true
+    use_location_config: true
+
+    # sys_model_nosie
+    sys_model_nosie_x: 0.05
+    sys_model_nosie_y: 0.05 
+    sys_model_nosie_theta: 0.0005
+
+    # reflector_option
+    reflector_option_sys_model_nosie_x: 0.005
+    reflector_option_sys_model_nosie_y: 0.005 
+    reflector_option_sys_model_nosie_theta: 0.0005
+    reflector_option_measure_nosie_x: 0.0135
+    reflector_option_measure_nosie_y: 0.0135 
+    reflector_option_measure_nosie_theta: 0.01
+
+    hit_ref_laser_min_num: 2
+    ref_intensity_thrd: 1600
+    match_sys_diff_dist: 20.0
+    dynamic_match_min_ref_num: 3
+    diff_ref_dist_thrd: 0.6
+
+    flag_use_file_pose: false
+
+    # odom_option
+    odom_option_measure_nosie_x: 0.01 
+    odom_option_measure_nosie_y: 0.01
+    odom_option_measure_nosie_theta: 0.01

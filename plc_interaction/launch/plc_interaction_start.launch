@@ -1,0 +1,5 @@
+<launch>
+    <rosparam command="load" file="$(find plc_interaction)/config/config_interaction.yaml" />
+    <node pkg="plc_interaction" type="plc_interaction_node" name="plc_interaction" output="screen">
+    </node>
+</launch>

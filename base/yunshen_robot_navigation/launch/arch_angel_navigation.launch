@@ -1,0 +1,33 @@
+<launch>
+  <!-- Arguments -->
+  <!-- arg name="map_file" default="$(find yunshen_robot_navigation)/maps/work_map.yaml"/> -->
+  <arg name="map_file" default="$(find yunshen_robot_navigation)/maps/0912-floor-1-T.yaml"/>
+  <arg name="open_rviz" default="false"/>
+  <arg name="move_forward_only" default="true"/>
+
+  <!-- robot description -->
+  <param name="robot_description" command="$(find xacro)/xacro.py $(find yunshen_robot_description)/urdf/arch_angel.urdf.xacro" />
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  <!-- Map server -->
+<!--  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>-->
+  <!-- node pkg="rosbag" name="bag_record" type="record" args="-a"/> -->
+  <!-- AMCL -->
+  <include file="$(find yunshen_robot_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find yunshen_robot_navigation)/launch/move_base.launch">
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+
+  <!-- laser_filters -->
+  <include file="$(find laser_filters)/launch/shadow_filter.launch"/>
+
+  <!-- rviz -->
+<!--  <group if="$(arg open_rviz)">
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find yunshen_robot_navigation)/rviz/yunshen_robot_navigation.rviz"/>
+  </group>-->
+</launch>

@@ -1,0 +1,5 @@
+<launch>
+    <rosparam command="load" file="$(find rcs_interaction)/config/config_rcs.yaml" />
+    <node pkg="rcs_interaction" type="rcs_interaction_node" name="rcs_interaction" output="screen">
+    </node>
+</launch>

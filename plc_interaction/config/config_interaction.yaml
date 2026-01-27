@@ -1,0 +1,13 @@
+ip_address_plc: 192.168.2.69
+
+socket_server_port_nav: 1101
+socket_client_port_nav: 1101
+
+socket_server_port_action: 1103
+socket_client_port_action: 1103
+
+flag_plc_send_encoder_fix: true
+topic_encoder: encoder
+topic_vel: vel
+topic_imu: imu_plc
+topic_odom: odom

@@ -1,0 +1,483 @@
+Panels:
+  - Class: rviz/Displays
+    Help Height: 78
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Submaps1
+        - /Submaps1/Submaps1
+        - /Map1
+        - /Constraints1
+        - /Constraints1/Namespaces1
+        - /Trajectories1
+        - /Trajectories1/Namespaces1
+        - /Axes2
+        - /MarkerArray1/Namespaces1
+      Splitter Ratio: 0.6006709933280945
+    Tree Height: 1239
+  - Class: rviz/Selection
+    Name: Selection
+  - Class: rviz/Tool Properties
+    Expanded:
+      - /2D Pose Estimate1
+      - /2D Nav Goal1
+      - /Publish Point1
+    Name: Tool Properties
+    Splitter Ratio: 0.5886790156364441
+  - Class: rviz/Views
+    Expanded:
+      - /Current View1
+    Name: Views
+    Splitter Ratio: 0.5
+  - Class: rviz/Time
+    Name: Time
+    SyncMode: 0
+    SyncSource: LaserScan
+Preferences:
+  PromptSaveOnExit: true
+Toolbars:
+  toolButtonStyle: 2
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: Submaps
+      Enabled: true
+      Fade-out distance: 1
+      High Resolution: true
+      Low Resolution: false
+      Name: Submaps
+      Queue Size: 10
+      Submap query service: /submap_query
+      Submaps:
+        All: false
+        All Submap Pose Markers: true
+        Trajectory 0:
+          0.180: false
+          1.180: false
+          10.180: false
+          100.180: false
+          101.180: false
+          102.180: false
+          103.180: false
+          104.180: false
+          105.180: false
+          106.180: false
+          107.180: false
+          108.180: false
+          109.180: false
+          11.180: false
+          110.180: false
+          111.180: false
+          112.180: false
+          113.180: false
+          114.180: false
+          115.180: false
+          116.180: false
+          117.180: false
+          118.180: false
+          119.180: false
+          12.180: false
+          120.180: false
+          121.180: false
+          122.180: false
+          123.180: false
+          124.180: false
+          125.180: false
+          126.180: false
+          127.180: false
+          128.180: false
+          129.180: false
+          13.180: false
+          130.180: false
+          131.180: false
+          132.180: false
+          133.180: false
+          134.180: false
+          135.180: false
+          136.180: false
+          137.180: false
+          138.180: false
+          139.180: false
+          14.180: false
+          140.180: false
+          141.180: false
+          142.180: false
+          143.180: false
+          144.180: false
+          145.180: false
+          146.180: false
+          147.180: false
+          148.180: false
+          149.180: false
+          15.180: false
+          16.180: false
+          17.180: false
+          18.180: false
+          19.180: false
+          2.180: false
+          20.180: false
+          21.180: false
+          22.180: false
+          23.180: false
+          24.180: false
+          25.180: false
+          26.180: false
+          27.180: false
+          28.180: false
+          29.180: false
+          3.180: false
+          30.180: false
+          31.180: false
+          32.180: false
+          33.180: false
+          34.180: false
+          35.180: false
+          36.180: false
+          37.180: false
+          38.180: false
+          39.180: false
+          4.180: false
+          40.180: false
+          41.180: false
+          42.180: false
+          43.180: false
+          44.180: false
+          45.180: false
+          46.180: false
+          47.180: false
+          48.180: false
+          49.180: false
+          5.180: false
+          50.180: false
+          51.180: false
+          52.180: false
+          53.180: false
+          54.180: false
+          55.180: false
+          56.180: false
+          57.180: false
+          58.180: false
+          59.180: false
+          6.180: false
+          60.180: false
+          61.180: false
+          62.180: false
+          63.180: false
+          64.180: false
+          65.180: false
+          66.180: false
+          67.180: false
+          68.180: false
+          69.180: false
+          7.180: false
+          70.180: false
+          71.180: false
+          72.180: false
+          73.180: false
+          74.180: false
+          75.180: false
+          76.180: false
+          77.180: false
+          78.180: false
+          79.180: false
+          8.180: false
+          80.180: false
+          81.180: false
+          82.180: false
+          83.180: false
+          84.180: false
+          85.180: false
+          86.180: false
+          87.180: false
+          88.180: false
+          89.180: false
+          9.180: false
+          90.180: false
+          91.180: false
+          92.180: false
+          93.180: false
+          94.180: false
+          95.180: false
+          96.180: false
+          97.180: false
+          98.180: false
+          99.180: false
+          Submap Pose Markers: true
+          Value: false
+        Trajectory 1:
+          0.180: true
+          1.180: true
+          2.180: true
+          3.180: true
+          4.180: true
+          5.137: true
+          6.47: true
+          Submap Pose Markers: true
+          Value: true
+      Topic: /submap_list
+      Tracking frame: base_link
+      Unreliable: false
+      Value: true
+    - Alpha: 0.30000001192092896
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /map
+      Unreliable: false
+      Use Timestamp: false
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /constraint_list
+      Name: Constraints
+      Namespaces:
+        Inter constraints, different trajectories: true
+        Inter constraints, same trajectory: false
+        Inter residuals, different trajectories: false
+        Inter residuals, same trajectory: false
+        Intra constraints: false
+        Intra residuals: false
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/LaserScan
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: LaserScan
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20000000298023224
+      Style: Flat Squares
+      Topic: /scan
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: z
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Min Color: 0; 0; 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.20000000298023224
+      Style: Flat Squares
+      Topic: /scan_matched_points2
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
+    - Alpha: 0.5
+      Cell Size: 1
+      Class: rviz/Grid
+      Color: 160; 160; 164
+      Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
+      Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Plane: XY
+      Plane Cell Count: 100
+      Reference Frame: <Fixed Frame>
+      Value: true
+    - Class: rviz/TF
+      Enabled: true
+      Filter (blacklist): ""
+      Filter (whitelist): ""
+      Frame Timeout: 15
+      Frames:
+        All Enabled: true
+        base_footprint:
+          Value: true
+        base_link:
+          Value: true
+        base_scan:
+          Value: true
+        imu_link:
+          Value: true
+        laser:
+          Value: true
+        map:
+          Value: true
+        odom:
+          Value: true
+      Marker Alpha: 1
+      Marker Scale: 1
+      Name: TF
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        map:
+          odom:
+            base_footprint:
+              base_link:
+                base_scan:
+                  laser:
+                    {}
+                imu_link:
+                  {}
+      Update Interval: 0
+      Value: true
+    - Alpha: 1
+      Class: rviz/RobotModel
+      Collision Enabled: false
+      Enabled: false
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+      Name: RobotModel
+      Robot Description: robot_description
+      TF Prefix: ""
+      Update Interval: 0
+      Value: false
+      Visual Enabled: true
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /trajectory_node_list
+      Name: Trajectories
+      Namespaces:
+        Trajectory 0: true
+        Trajectory 1: true
+      Queue Size: 100
+      Value: true
+    - Alpha: 1
+      Class: rviz/Axes
+      Enabled: true
+      Length: 1
+      Name: Axes
+      Radius: 0.5
+      Reference Frame: base_footprint
+      Show Trail: false
+      Value: true
+    - Alpha: 1
+      Class: rviz/Axes
+      Enabled: true
+      Length: 100
+      Name: Axes
+      Radius: 0.02500000037252903
+      Reference Frame: map
+      Show Trail: false
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /all_map_reflectors
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /matched_reflectors
+      Name: Marker
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/MarkerArray
+      Enabled: false
+      Marker Topic: /trajectory_node_list
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
+  Enabled: true
+  Global Options:
+    Background Color: 100; 100; 100
+    Default Light: true
+    Fixed Frame: map
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/Interact
+      Hide Inactive Objects: true
+    - Class: rviz/MoveCamera
+    - Class: rviz/Select
+    - Class: rviz/FocusCamera
+    - Class: rviz/Measure
+    - Class: rviz/SetInitialPose
+      Theta std deviation: 0.2617993950843811
+      Topic: /initialpose
+      X std deviation: 0.5
+      Y std deviation: 0.5
+    - Class: rviz/SetGoal
+      Topic: /move_base_simple/goal
+    - Class: rviz/PublishPoint
+      Single click: true
+      Topic: /clicked_point
+  Value: true
+  Views:
+    Current:
+      Angle: 0.009999999776482582
+      Class: rviz/TopDownOrtho
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Invert Z Axis: false
+      Name: Current View
+      Near Clip Distance: 0.009999999776482582
+      Scale: 69.74797058105469
+      Target Frame: <Fixed Frame>
+      X: 104.5069808959961
+      Y: -2.806101083755493
+    Saved: ~
+Window Geometry:
+  Displays:
+    collapsed: false
+  Height: 1536
+  Hide Left Dock: false
+  Hide Right Dock: true
+  QMainWindow State: 000000ff00000000fd0000000400000000000001c500000562fc0200000008fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001db000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d00000562000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261000000010000010f00000562fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003d00000562000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009b80000003efc0100000002fb0000000800540069006d00650100000000000009b8000003bc00fffffffb0000000800540069006d00650100000000000004500000000000000000000007ed0000056200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Selection:
+    collapsed: false
+  Time:
+    collapsed: false
+  Tool Properties:
+    collapsed: false
+  Views:
+    collapsed: true
+  Width: 2488
+  X: 72
+  Y: 27

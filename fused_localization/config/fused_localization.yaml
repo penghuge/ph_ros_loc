@@ -1,0 +1,33 @@
+# 0: proportion fuse. 1: ekf fuse.
+fused_localization_type: 1
+
+# 0: median filtering. 1: mean filtering.
+filter_type: 0
+
+flag_use_carto_pose: true
+flag_use_ref_pose: true
+slide_window_threshold: 3
+file_pose_path: "/home/penghu/HX/code/ph_ros_ws_ceshi/record_pose.txt"
+
+# carto pose is not avaliable, region for reflector pose and predict pose
+# region01: [[88.8, 12.7], [92.0, -14.9], [121.0, -17.8], [121.0, 11.7]]
+region01: [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]
+
+# region that just using carto pose or ref pose
+# region02: [[95.1, 40.9], [111.0, 40.9], [112.0, 74.1], [94.9, 74.1]]
+region02: [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]]
+
+# sys_model_nosie: Q = (a_max/2)^2, a_max = 0.2 m/s^2
+fused_sys_model_nosie_x: 0.001
+fused_sys_model_nosie_y: 0.001 
+fused_sys_model_nosie_theta: 0.001
+
+# reflector measurement noise: R = ratio*R + (1-ratio)*v*vT, v = z - h(x)
+fused_reflector_measure_nosie_x: 0.01
+fused_reflector_measure_nosie_y: 0.01
+fused_reflector_measure_nosie_theta: 0.01
+
+# carto measurement noise
+fused_carto_measure_nosie_x: 0.01
+fused_carto_measure_nosie_y: 0.01
+fused_carto_measure_nosie_theta: 0.01

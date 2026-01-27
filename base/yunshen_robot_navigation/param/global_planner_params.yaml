@@ -1,0 +1,11 @@
+GlobalPlanner:
+
+  use_dijkstra: false
+  use_quadratic: true
+  use_grid_path: false
+  publish_potential: true
+  use_eight_connet: false
+  orientation_window_size: 1
+  neutral_cost: 10
+  cost_factor: 5.0
+

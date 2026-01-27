@@ -1,0 +1,7 @@
+<launch>
+
+  <include file="$(find yunshen_robot_navigation)/launch/arch_angel_navigation.launch"/>
+  <include file="$(find sick_scan)/launch/sick_node.launch"/>
+  <include file="$(find odom)/launch/odom_start.launch"/>
+
+</launch>

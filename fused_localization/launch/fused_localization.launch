@@ -1,0 +1,5 @@
+<launch>
+    <rosparam command="load" file="$(find fused_localization)/config/fused_localization.yaml" />
+    <node name="fused_localization_node" pkg="fused_localization" type="fused_localization_node" output="screen" respawn="false"/>
+    <include file="$(find reflector_location)/launch/reflector_location.launch" />
+</launch>

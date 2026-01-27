@@ -1,0 +1,5 @@
+<launch>
+    <rosparam command="load" file="$(find reflector_location)/config/reflector_location_param.yaml" />
+    <node name="reflector_location_node" pkg="reflector_location"  type="reflector_location_node"  output="screen"  respawn="false">
+    </node>
+</launch>

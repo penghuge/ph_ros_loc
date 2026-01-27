@@ -1,0 +1,13 @@
+ip_rcs: 192.168.2.110
+port: 1500
+start_bits: 0
+nb_bits: 500
+start_input_bits: 0
+nb_input_bits: 500
+start_registers: 0
+nb_registers: 2500
+start_input_registers: 0
+nb_input_registers: 500
+recv_timeout: 3   # unit: s
+disconnect_count_max: 5
+topic_task_rcs: task_rcs

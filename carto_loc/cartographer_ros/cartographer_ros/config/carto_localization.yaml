@@ -1,0 +1,24 @@
+use_sim_time: true
+
+initial_scan_match_linear_window: 5.0
+initial_scan_match_min_score_threshold: 0.25
+initial_scan_match_confidence_score_threshold: 0.45
+initial_scan_match_min_time: 1.0
+initial_use_ceres_to_refine: true
+
+match_mode: 2  # 1: pure localize; 2: mapping; 3:relocation expand; 4: constraint expand
+
+scan_match_min_score_threshold: 0.25
+scan_match_confidence_score_threshold: 0.33
+use_ceres_to_refine: true
+scan_match_linear_window: 0.1
+scan_match_angle_window: 0.1
+scan_match_min_time: 1.0
+is_appy: false
+is_one_scan: false
+
+
+yaw_con: false
+precison: false
+num_submap: 3
+

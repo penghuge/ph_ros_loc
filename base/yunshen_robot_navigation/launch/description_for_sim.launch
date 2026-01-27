@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find yunshen_robot_navigation)/launch/description_robot.launch"/>
+    <!-- <include file="$(find odom)/launch/odom_start.launch"/> -->
+</launch>

@@ -1,0 +1,31 @@
+obstacle_range: 3.0
+raytrace_range: 3.5
+
+#footprint: [[-0.324, -0.357], [-0.324, 0.357], [0.324, 0.357], [0.324, -0.357]]
+robot_radius: 0.35
+
+inflation_radius: 1.0
+cost_scaling_factor: 3.0
+
+obstacles:
+  observation_sources: scan
+  scan: {sensor_frame: base_scan, data_type: LaserScan, topic: scan, marking: true, clearing: true, inf_is_valid: true}
+  observation_persistence: 0.5
+  footprint_clearing_enabled: false
+range_layer:
+  enabled:            true
+  clear_threshold:    0.46
+  mark_threshold:     0.98
+  topic: sonar
+  no_readings_timeout: 0.0
+  clear_on_max_reading: true
+  flag_pub_range: true
+  flag_push_obs: true
+  range_sensor_number: 8
+  time_obstacle_save: 5
+  max_effective_sonar: 1.0
+  min_effective_sonar: 0.02
+  max_dis_measure_sonar: 2.5
+  flag_add_filter: true
+inflation_layer:
+  inflation_radius: 1.0

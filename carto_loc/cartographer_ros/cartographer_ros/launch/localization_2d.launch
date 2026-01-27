@@ -1,0 +1,18 @@
+<launch>
+  <rosparam command="load" file="$(find cartographer_ros)/config/carto_localization.yaml" />
+  <arg name="pbstream_filename" default="$(find cartographer_ros)/map/yc_4.pbstream"/> 
+  <arg name="log_dir" default="$(find cartographer_ros)/config/"/>
+  <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_ros)/../../cartographer/configuration_files
+          -configuration_basename demo_2d.lua
+          -load_state_filename $(arg pbstream_filename)
+          -load_frozen_state true
+          -log_directory  $(arg log_dir)"
+      output="screen">
+  </node>
+
+  <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros" type="cartographer_occupancy_grid_node" args="-resolution 0.05" />
+  <node name="rviz" pkg="rviz" type="rviz" required="false" args="-d $(find cartographer_ros)/configuration_files/ceshi.rviz" />
+  <include file="$(find yunshen_robot_navigation)/launch/description_for_sim.launch" />
+</launch>

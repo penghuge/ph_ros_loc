@@ -1,0 +1,37 @@
+---
+BasedOnStyle: Google
+---
+Language:                               Cpp
+Cpp11BracedListStyle:                   true
+Standard:                               Cpp11
+CommentPragmas:                         '^ NOLINT'
+ColumnLimit:                            120
+IndentWidth:                            4
+ContinuationIndentWidth:                4
+BreakBeforeBraces:                      Custom  # 自定义不同上下文的花括号格式
+BraceWrapping:
+  AfterFunction:         true           # 函数实现左花括号独占一行
+  AfterControlStatement: false          # 控制语句的左花括号紧跟在后
+  AfterClass:            true
+  AfterEnum:             true
+  AfterNamespace:        true
+AllowShortIfStatementsOnASingleLine:    false
+AllowShortLoopsOnASingleLine:           false
+AllowShortFunctionsOnASingleLine:       None   # 短函数也需分多行
+IncludeCategories:
+  - Regex:       '<(immintrin.h|malloc.h|wait.h|x86intrin.h|cuda.*)>'
+    Priority:    3
+  - Regex:       '<(arpa/|netinet/|net/if|sys/)?[^\./]*\.h>'
+    Priority:    1
+  - Regex:       '<[^/\./]*>'
+    Priority:    2
+  - Regex:       '<'
+    Priority:    3
+  - Regex:       '"(gtest|gmock)/'
+    Priority:    4
+  - Regex:       '\.pb\.h'
+    Priority:    6
+  - Regex:       '^"(cyber|modules)'
+    Priority:    7
+  - Regex:       '.*'
+    Priority:    5

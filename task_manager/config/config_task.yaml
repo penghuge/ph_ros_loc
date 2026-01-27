@@ -1,0 +1,13 @@
+ip_address_dtof: 192.168.1.82
+flag_use_2d_loc: true
+flag_enable_mpc: false
+flag_enable_pallet_identify: true
+flag_show_project_point: true
+min_dis_ahead_point: 0.3
+scale_ahead_point: 0.7
+step_generate_path: 0.1
+threshold_arrive_des: 0.1
+distance_head: 1.0
+distance_tail: 1.0
+dis_derail: 0.2
+topic_task_rcs: task_rcs
