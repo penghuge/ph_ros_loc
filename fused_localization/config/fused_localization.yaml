@@ -7,7 +7,7 @@ filter_type: 0
 flag_use_carto_pose: true
 flag_use_ref_pose: true
 slide_window_threshold: 3
-file_pose_path: "/home/penghu/HX/code/ph_ros_ws_ceshi/record_pose.txt"
+file_pose_path: "/home/penghu/HX/code/代码更新管理/GitHub/ph_ros_ws/record_pose.txt"
 
 # carto pose is not avaliable, region for reflector pose and predict pose
 # region01: [[88.8, 12.7], [92.0, -14.9], [121.0, -17.8], [121.0, 11.7]]
