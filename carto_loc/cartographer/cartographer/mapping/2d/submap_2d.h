@@ -93,6 +93,9 @@ class ActiveSubmaps2D {
   std::vector<std::shared_ptr<const Submap2D>> InsertRangeData(
       const sensor::RangeData& range_data);
 
+  std::vector<std::shared_ptr<const Submap2D>> InsertSingleMapRangeData(
+      const sensor::RangeData& range_data);
+
   std::vector<std::shared_ptr<const Submap2D>> submaps() const;
   //penghu 24/4/23
   struct Data {

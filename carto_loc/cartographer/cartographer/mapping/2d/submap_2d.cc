@@ -179,6 +179,26 @@ std::vector<std::shared_ptr<const Submap2D>> ActiveSubmaps2D::InsertRangeData(
   return submaps();
 }
 
+//单张子图创建
+std::vector<std::shared_ptr<const Submap2D>> ActiveSubmaps2D::InsertSingleMapRangeData(
+    const sensor::RangeData& range_data)
+{
+  //不存在submap时（建图启动时），或者子地图中激光数量达到指定数量时，该子地图构建完成
+  if (submaps_.empty() ||
+      submaps_.back()->num_range_data() == options_.num_range_data())
+  {
+    AddSubmap(range_data.origin.head<2>());
+  }
+  for (auto& submap : submaps_) {
+    submap->InsertRangeData(range_data, range_data_inserter_.get());
+  }
+  //因为只有2张活动submap
+  if (submaps_.front()->num_range_data() == 2 * options_.num_range_data()) {
+    submaps_.front()->Finish();
+  }
+  return submaps();
+}
+
 //创建一个测距数据插入器
 std::unique_ptr<RangeDataInserterInterface>
 ActiveSubmaps2D::CreateRangeDataInserter()

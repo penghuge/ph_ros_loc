@@ -150,6 +150,12 @@ class LocalTrajectoryBuilder2D {
       const transform::Rigid3d& pose_estimate,
       const Eigen::Quaterniond& gravity_alignment);
 
+  std::unique_ptr<InsertionResult> InsertSingleMapIntoSubmap(
+      common::Time time, const sensor::RangeData& range_data_in_local,
+      const sensor::PointCloud& filtered_gravity_aligned_point_cloud,
+      const transform::Rigid3d& pose_estimate,
+      const Eigen::Quaterniond& gravity_alignment);
+
   // Scan matches 'filtered_gravity_aligned_point_cloud' and returns the
   // observed pose, or nullptr on failure.
   std::unique_ptr<transform::Rigid2d> ScanMatch(

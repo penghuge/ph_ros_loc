@@ -20,6 +20,7 @@
 #include "cartographer/metrics/family_factory.h"
 #include "cartographer/sensor/range_data.h"
 #include "cartographer/mapping/internal/2d/local_trajectory_builder_2d.h"
+#include "cartographer/transform/transform.h"
 
 
 namespace cartographer {
@@ -645,11 +646,65 @@ LocalTrajectoryBuilder2D::AddAccumulatedRangeData(
             m_file_interface->SetCore(test_result.pose.prob);
             test_result.flag = true;
             test_result.pose.rigid = gravity_aligned_range_data_pose * gravity_alignment;  // lyy
+            LOG_INFO_THROTTLE( 1.0, "++++++++++++++++Match_use time_1=%fs!", SlamCommon::ToSeconds(SlamCommon::TimeNow() - m_start_mach_time));
+
+            //----------------------------------------------------------------
+            // 定位输出二、建图匹配结果（单子图构建模式）
+            const auto submap_build_start = std::chrono::steady_clock::now();
+            // ScanMatch 一定只使用当前唯一的活跃子图（ScanMatch 内部用 active_submaps_.submaps().front()）。
+            std::unique_ptr<transform::Rigid2d> pose_estimate_2d =
+                ScanMatch(time, pose_prediction, filtered_gravity_aligned_point_cloud);
+            if (pose_estimate_2d == nullptr) {
+                return nullptr;
+            }
+
+            // 产生用于插图的位姿：若当前子图是首帧（num_range_data==0），强制使用 global-match 位姿。
+            // 注意：ActiveSubmaps2D 的单子图实现会在子图完成后 clear()，下一帧会创建新子图，num_range_data 会从 0
+            // 重新开始。
+            const bool is_first_range_data_in_submap =
+                active_submaps_.submaps().empty() || active_submaps_.submaps().front()->num_range_data() == 0;
+
+            transform::Rigid3d pose_estimate = transform::Embed3D(*pose_estimate_2d) * gravity_alignment;
+            if (is_first_range_data_in_submap) {
+                pose_estimate = test_result.pose.rigid;
+            }
+
+            // test_result.flag = true;
+            // test_result.pose.rigid = pose_estimate;
+
+            sensor::RangeData range_data_in_local_for_insert =
+                TransformRangeData(gravity_aligned_range_data, transform::Embed3D(pose_estimate_2d->cast<float>()));
+
+            std::unique_ptr<InsertionResult> insertion_result =
+                InsertSingleMapIntoSubmap(time, range_data_in_local_for_insert, filtered_gravity_aligned_point_cloud,
+                                         pose_estimate, gravity_alignment.rotation());
+            LOG_INFO_THROTTLE( 1.0, "++++++++++++++++Match_use time_2=%fs!", SlamCommon::ToSeconds(SlamCommon::TimeNow() - m_start_mach_time));
+            // const auto submap_build_end = std::chrono::steady_clock::now();
+            // const double submap_build_cost_ms = 1000. * common::ToSeconds(submap_build_end - submap_build_start);
+            // 1Hz 低频打印：避免每帧刷屏。
+            // static auto s_last_print_time = std::chrono::steady_clock::now();
+            // static double s_cost_ms_sum = 0.0;
+            // static int s_cost_ms_cnt = 0;
+            // s_cost_ms_sum += submap_build_cost_ms;
+            // ++s_cost_ms_cnt;
+            // if (common::ToSeconds(submap_build_end - s_last_print_time) >= 1.0) {
+            //     const double avg_ms = s_cost_ms_cnt > 0 ? (s_cost_ms_sum / s_cost_ms_cnt) : 0.0;
+            //     LOG_INFO(
+            //         "[LTB2D] submap_build_cost_ms(avg_1s)=%f last_ms=%f (scan_match+insert) is_first_in_submap=%d "
+            //         "active_submaps=%zu",
+            //         avg_ms, submap_build_cost_ms, is_first_range_data_in_submap ? 1 : 0,
+            //         active_submaps_.submaps().size());
+            //     s_last_print_time = submap_build_end;
+            //     s_cost_ms_sum = 0.0;
+            //     s_cost_ms_cnt = 0;
+            // }
+            //----------------------------------------------------------------
+
             extrapolator_->AddPose(time, test_result.pose.rigid);
             m_best_pose.Reset(test_result.pose.rigid.translation().x(), test_result.pose.rigid.translation().y(),
                               cartographer::transform::GetYaw(test_result.pose.rigid));
             LOG_INFO_THROTTLE(
-                1.0, "ph_step_3: success locate in global map , Mach_after_best pose(%f, %f, %f), Match_use time=%fs!",
+                1.0, "ph_step_3: success locate in global map , Mach_after_best pose(%f, %f, %f), Match_use time_3=%fs!",
                 m_best_pose.x, m_best_pose.y, m_best_pose.theta,
                 SlamCommon::ToSeconds(SlamCommon::TimeNow() - m_start_mach_time));
             sensor::RangeData range_data_in_local =
@@ -823,6 +878,30 @@ LocalTrajectoryBuilder2D::InsertIntoSubmap(
     }
     std::vector<std::shared_ptr<const Submap2D>> insertion_submaps =
             active_submaps_.InsertRangeData(range_data_in_local);
+    return absl::make_unique<InsertionResult>(InsertionResult{
+                                                  std::make_shared<const TrajectoryNode::Data>(TrajectoryNode::Data{
+                                                      time,
+                                                      gravity_alignment,
+                                                      filtered_gravity_aligned_point_cloud,
+                                                      {},  // 'high_resolution_point_cloud' is only used in 3D.
+                                                      {},  // 'low_resolution_point_cloud' is only used in 3D.
+                                                      {},  // 'rotational_scan_matcher_histogram' is only used in 3D.
+                                                      pose_estimate}),
+                                                  std::move(insertion_submaps)});
+}
+
+std::unique_ptr<LocalTrajectoryBuilder2D::InsertionResult>
+LocalTrajectoryBuilder2D::InsertSingleMapIntoSubmap(
+        const common::Time time, const sensor::RangeData& range_data_in_local,
+        const sensor::PointCloud& filtered_gravity_aligned_point_cloud,
+        const transform::Rigid3d& pose_estimate,
+        const Eigen::Quaterniond& gravity_alignment) {
+    //如果位姿非常接近，则过滤掉本轮激光数据，返回空
+    if (motion_filter_.IsSimilar(time, pose_estimate)) {
+        return nullptr;
+    }
+    std::vector<std::shared_ptr<const Submap2D>> insertion_submaps =
+            active_submaps_.InsertSingleMapRangeData(range_data_in_local);
     return absl::make_unique<InsertionResult>(InsertionResult{
                                                   std::make_shared<const TrajectoryNode::Data>(TrajectoryNode::Data{
                                                       time,
