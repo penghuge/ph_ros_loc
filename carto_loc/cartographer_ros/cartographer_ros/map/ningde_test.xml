@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<image>/home/penghu/HX/code/map/ningde_test</image>
+<resolution>0.050</resolution>
+<origin_pose_x>-23.4873</origin_pose_x>
+<origin_pose_y>-79.6470</origin_pose_y>
+<origin_pose_theta>0.0000</origin_pose_theta>
+<occupied_threash>0.510</occupied_threash>
+<free_threash>0.490</free_threash>
+<negate>false</negate>

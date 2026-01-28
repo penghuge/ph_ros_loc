@@ -6,7 +6,7 @@ initial_scan_match_confidence_score_threshold: 0.45
 initial_scan_match_min_time: 1.0
 initial_use_ceres_to_refine: true
 
-match_mode: 2  # 1: pure localize; 2: mapping; 3:relocation expand; 4: constraint expand
+match_mode: 1  # 1: pure localize; 2: mapping; 3:relocation expand; 4: constraint expand
 
 scan_match_min_score_threshold: 0.25
 scan_match_confidence_score_threshold: 0.33

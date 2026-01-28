@@ -1,6 +1,6 @@
 <launch>
   <rosparam command="load" file="$(find cartographer_ros)/config/carto_localization.yaml" />
-  <arg name="pbstream_filename" default="$(find cartographer_ros)/map/yc_4.pbstream"/> 
+  <arg name="pbstream_filename" default="$(find cartographer_ros)/map/ningde_test.pbstream"/> 
   <arg name="log_dir" default="$(find cartographer_ros)/config/"/>
   <node name="cartographer_node" pkg="cartographer_ros"
       type="cartographer_node" args="
