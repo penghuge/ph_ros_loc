@@ -39,7 +39,7 @@
 #include "nav_msgs/OccupancyGrid.h"
 #include "cartographer/common/const_value.h"
 #include <common_msgs/SetPose.h>
-#include "cartographer/common/file_interface.h"
+#include "cartographer/cartographer/common/file_interface.h"
 
 // Abseil unfortunately pulls in winnt.h, which #defines DELETE.
 // Clean up to unbreak visualization_msgs::Marker::DELETE.
@@ -135,6 +135,9 @@ class MapBuilderBridge {
   float best_score_;
   int matched_submap_id_;
   SlamCommon::CFileInterface* file_interface_;
+
+  static constexpr int kInsertionSubmapsVirtualTrajectoryId = 5;
+    std::shared_ptr<const cartographer::mapping::Submap> last_insertion_submap_ GUARDED_BY(mutex_);
 };
 
 }  // namespace cartographer_ros

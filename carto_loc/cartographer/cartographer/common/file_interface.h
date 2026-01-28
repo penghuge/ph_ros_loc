@@ -80,7 +80,7 @@ public:
         return vel_.load();
     }
     //penghu 24/7/8
-    bool GetSign()
+    bool GetSign()             
     {
         LOG_DEBUG_THROTTLE(1.0, "get vel = %f, vel_y = %f, vel_w = %f", vel_.load(), vel_y_.load(), vel_w_.load());
         if(vel_.load() == 0 && vel_y_.load() == 0 && fabs(vel_w_.load()) < 0.005)
@@ -294,7 +294,6 @@ public:
     }
 
     int GetPureLocalization(){
-        LOG_DEBUG("get match_mode = %d", match_mode_.load());
 
         return match_mode_.load();
     }

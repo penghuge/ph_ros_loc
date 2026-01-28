@@ -183,19 +183,30 @@ std::vector<std::shared_ptr<const Submap2D>> ActiveSubmaps2D::InsertRangeData(
 std::vector<std::shared_ptr<const Submap2D>> ActiveSubmaps2D::InsertSingleMapRangeData(
     const sensor::RangeData& range_data)
 {
-  //不存在submap时（建图启动时），或者子地图中激光数量达到指定数量时，该子地图构建完成
-  if (submaps_.empty() ||
-      submaps_.back()->num_range_data() == options_.num_range_data())
-  {
+  // 单子图模式：submaps_ 中始终只有 0 或 1 张活跃子图。
+  // - 首帧创建 1 张子图。
+  // - 每帧只往这一张子图插入。
+  // - 当该子图累计插入 2 * num_range_data 次后，Finish 并清空；下一帧再创建下一张。
+
+  if (submaps_.empty()) {
     AddSubmap(range_data.origin.head<2>());
   }
-  for (auto& submap : submaps_) {
-    submap->InsertRangeData(range_data, range_data_inserter_.get());
+
+  CHECK_EQ(submaps_.size(), 1u);
+  auto& submap = submaps_.front();
+  CHECK(submap);
+
+  submap->InsertRangeData(range_data, range_data_inserter_.get());
+
+  const int max_inserts_per_submap = 2 * options_.num_range_data();
+  if (submap->num_range_data() >= max_inserts_per_submap) {
+    if (!submap->insertion_finished()) {
+      submap->Finish();
+    }
+    // 删除已完成子图，确保 submaps_ 里永远不会同时存在多张。
+    submaps_.clear();
   }
-  //因为只有2张活动submap
-  if (submaps_.front()->num_range_data() == 2 * options_.num_range_data()) {
-    submaps_.front()->Finish();
-  }
+
   return submaps();
 }
 

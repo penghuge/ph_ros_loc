@@ -141,9 +141,18 @@ int MapBuilderBridge::AddTrajectory(
                  const ::cartographer::mapping::TrajectoryBuilderInterface::
                      InsertionResult> insertion_result) {
         OnLocalSlamResult(trajectory_id, time, local_pose, range_data_in_local);
-        if(insertion_result != nullptr){
+        // Cache only ONE active/insertion submap for the virtual query path.
+        // 注意：很多帧（尤其 pure localization 或 motion_filter）可能拿不到 insertion_result。
+        // 为了让 RViz “持续显示最后一张活跃子图”，这里 insertion_result==nullptr 时不清空缓存。
+        if (insertion_result != nullptr) {
           best_score_ = insertion_result->node_id.node_index * 0.001f;
           matched_submap_id_ = insertion_result->node_id.trajectory_id;
+          {
+            absl::MutexLock lock(&mutex_);
+            if (!insertion_result->insertion_submaps.empty()) {
+              last_insertion_submap_ = insertion_result->insertion_submaps.front();
+            }
+          }
         }
       });
   LOG(INFO) << "Added trajectory with ID '" << trajectory_id << "'.";
@@ -186,15 +195,39 @@ void MapBuilderBridge::HandleSubmapQuery(
     cartographer_ros_msgs::SubmapQuery::Request& request,
     cartographer_ros_msgs::SubmapQuery::Response& response) {
   cartographer::mapping::proto::SubmapQuery::Response response_proto;
-  cartographer::mapping::SubmapId submap_id{request.trajectory_id,
-                                            request.submap_index};
-  const std::string error =
-      map_builder_->SubmapToProto(submap_id, &response_proto);
-  if (!error.empty()) {
-    LOG(ERROR) << error;
-    response.status.code = cartographer_ros_msgs::StatusCode::NOT_FOUND;
-    response.status.message = error;
-    return;
+
+  // Virtual query: serve the current active/insertion submap from cache.
+  // Only enabled in pure localization mode.
+  if (file_interface_ != nullptr && file_interface_->GetPureLocalization() == 1 &&
+      request.trajectory_id == kInsertionSubmapsVirtualTrajectoryId) {
+    std::shared_ptr<const cartographer::mapping::Submap> submap;
+    {
+      absl::MutexLock lock(&mutex_);
+      submap = last_insertion_submap_;
+    }
+
+    // Expose exactly one virtual submap at index 0.
+    if (request.submap_index != 0 || submap == nullptr) {
+      response.status.code = cartographer_ros_msgs::StatusCode::NOT_FOUND;
+      response.status.message = "Virtual insertion submap not found.";
+      return;
+    }
+
+    // We don't necessarily have a global pose for active submaps. Use identity
+    // for the global_submap_pose so RViz can still render the texture.
+  submap->ToResponseProto(cartographer::transform::Rigid3d::Identity(),
+              &response_proto);
+  } else {
+    cartographer::mapping::SubmapId submap_id{request.trajectory_id,
+                                              request.submap_index};
+    const std::string error =
+        map_builder_->SubmapToProto(submap_id, &response_proto);
+    if (!error.empty()) {
+      LOG(ERROR) << error;
+      response.status.code = cartographer_ros_msgs::StatusCode::NOT_FOUND;
+      response.status.message = error;
+      return;
+    }
   }
 
   response.submap_version = response_proto.submap_version();
@@ -248,6 +281,11 @@ cartographer_ros_msgs::SubmapList MapBuilderBridge::GetSubmapList() {
   cartographer_ros_msgs::SubmapList submap_list;
   submap_list.header.stamp = ::ros::Time::now();
   submap_list.header.frame_id = node_options_.map_frame;
+
+  const bool pure_localization =
+      (file_interface_ != nullptr && file_interface_->GetPureLocalization() == 1);
+
+  // Always publish pose_graph submaps (these are the fixed submaps you want).
   for (const auto& submap_id_pose :
        map_builder_->pose_graph()->GetAllSubmapPoses()) {
     cartographer_ros_msgs::SubmapEntry submap_entry;
@@ -258,6 +296,26 @@ cartographer_ros_msgs::SubmapList MapBuilderBridge::GetSubmapList() {
     submap_entry.submap_version = submap_id_pose.data.version;
     submap_entry.pose = ToGeometryMsgPose(submap_id_pose.data.pose);
     submap_list.submap.push_back(submap_entry);
+  }
+
+  // In pure localization mode, additionally publish exactly one active/insertion
+  // submap (virtual id) so RViz can visualize current matching/insertion.
+  if (pure_localization) {
+    std::shared_ptr<const cartographer::mapping::Submap> submap;
+    {
+      absl::MutexLock lock(&mutex_);
+      submap = last_insertion_submap_;
+    }
+
+    if (submap != nullptr) {
+      cartographer_ros_msgs::SubmapEntry submap_entry;
+      submap_entry.is_frozen = false;
+      submap_entry.trajectory_id = kInsertionSubmapsVirtualTrajectoryId;
+      submap_entry.submap_index = 0;
+      submap_entry.submap_version = submap->num_range_data();
+      submap_entry.pose = ToGeometryMsgPose(submap->local_pose());
+      submap_list.submap.push_back(submap_entry);
+    }
   }
 
   return submap_list;

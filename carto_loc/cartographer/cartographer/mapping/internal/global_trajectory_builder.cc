@@ -86,11 +86,17 @@ public:
             //lyy
             int matched_submap_id = local_trajectory_builder_->GetMatchedSubmapId();
             int tmp_node_index = int(1000.0f * local_trajectory_builder_->GetBestCandidateScore());
-            std::unique_ptr<InsertionResult> insertion_result = absl::make_unique<InsertionResult>(
-                                            InsertionResult{
-                                            NodeId(matched_submap_id, tmp_node_index), 
-                                            nullptr, 
-                                            {}});
+            // std::unique_ptr<InsertionResult> insertion_result = absl::make_unique<InsertionResult>(
+            //                                 InsertionResult{
+            //                                 NodeId(matched_submap_id, tmp_node_index), 
+            //                                 nullptr, 
+            //                                 {}});
+            std::unique_ptr<InsertionResult> insertion_result =
+                absl::make_unique<InsertionResult>(InsertionResult{
+                    NodeId(matched_submap_id, tmp_node_index), nullptr,
+                    std::vector<std::shared_ptr<const Submap>>(
+                    matching_result->insertion_result->insertion_submaps.begin(),
+                    matching_result->insertion_result->insertion_submaps.end())});
 
             //如果激光数据成功插入submap中
             if (matching_result->insertion_result != nullptr) {

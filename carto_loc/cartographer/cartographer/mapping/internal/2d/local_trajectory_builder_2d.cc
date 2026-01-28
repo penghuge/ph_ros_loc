@@ -710,8 +710,10 @@ LocalTrajectoryBuilder2D::AddAccumulatedRangeData(
             sensor::RangeData range_data_in_local =
                 TransformRangeData(gravity_aligned_range_data, gravity_aligned_range_data_pose.cast<float>());
 
+            // return absl::make_unique<MatchingResult>(
+            //     MatchingResult{time, test_result.pose.rigid, std::move(range_data_in_local), nullptr});
             return absl::make_unique<MatchingResult>(
-                MatchingResult{time, test_result.pose.rigid, std::move(range_data_in_local), nullptr});
+                MatchingResult{time, test_result.pose.rigid, std::move(range_data_in_local), std::move(insertion_result)});
             }
         case 2: {
             //  local map frame <- gravity-aligned frame
@@ -898,7 +900,22 @@ LocalTrajectoryBuilder2D::InsertSingleMapIntoSubmap(
         const Eigen::Quaterniond& gravity_alignment) {
     //如果位姿非常接近，则过滤掉本轮激光数据，返回空
     if (motion_filter_.IsSimilar(time, pose_estimate)) {
-        return nullptr;
+        // motion filter 认为这一帧和上一帧太相似：不对栅格做插入，但仍需要把
+        // “当前活跃子图”回传给下游（例如 RViz 虚拟活动子图显示通道）。
+        std::vector<std::shared_ptr<const Submap2D>> insertion_submaps;
+        if (!active_submaps_.submaps().empty()) {
+            insertion_submaps.push_back(active_submaps_.submaps().front());
+        }
+        return absl::make_unique<InsertionResult>(InsertionResult{
+            std::make_shared<const TrajectoryNode::Data>(TrajectoryNode::Data{
+                time,
+                gravity_alignment,
+                filtered_gravity_aligned_point_cloud,
+                {},  // 'high_resolution_point_cloud' is only used in 3D.
+                {},  // 'low_resolution_point_cloud' is only used in 3D.
+                {},  // 'rotational_scan_matcher_histogram' is only used in 3D.
+                pose_estimate}),
+            std::move(insertion_submaps)});
     }
     std::vector<std::shared_ptr<const Submap2D>> insertion_submaps =
             active_submaps_.InsertSingleMapRangeData(range_data_in_local);
