@@ -94,36 +94,26 @@ bool fast_scan_matcher_2d_local::MatchInMap(
   Eigen::Vector2d initial_pose = {0.0, 0.0};
   transform::Rigid2d tmp_pose_estimate = *pose_estimate;
   double initial_angle = 0.0;
-  candidate_2d::Candidate2D best_candidate(0, 0, 0,
-                                           candidate_2d::SearchParameters(), 0);
+  candidate_2d::Candidate2D best_candidate(0, 0, 0, candidate_2d::SearchParameters(), 0);
   best_candidate.score = min_score;
   int best_submap_index = 0;
   int precomputed_size = (int)_is_precomputed.size();
   m_stop_matching = false;
-  // penghu 24/6/22
-  double last_candidate_y = 0;
-  double last_candidate_x = 0;
-  LOG_INFO_THROTTLE(1.0, "time_costb = %fs", SlamCommon::ToSeconds(SlamCommon::TimeNow() - start_time));
   // penghu*
   for (int i = 0; i < precomputed_size; ++i) {
-    if (m_stop_matching) {
-      return false;
-    }
-    // 生成整形与浮点数映射关系快速查找表
-    // if (!_is_precomputed[i]) {
-    //   ComputeSubmap2dProto(i);
-    //   _is_precomputed[i] = true;
-    // }
-    tmp_pose_estimate = *pose_estimate;
-    tmp_pose_estimate = local_to_global_vec[i].inverse() * tmp_pose_estimate;
+      if (m_stop_matching) {
+          return false;
+      }
 
-    const auto local_submap_pose2d = cartographer::transform::Project2D(
-        cartographer::transform::ToRigid3(_submap2d_protos[i].local_pose()));
+      tmp_pose_estimate = *pose_estimate;
+      tmp_pose_estimate = local_to_global_vec[i].inverse() * tmp_pose_estimate;
 
-    const transform::Rigid2d trans_node_submap =
-        local_submap_pose2d.inverse() * tmp_pose_estimate;
-    double distance = trans_node_submap.translation().norm();
-    distanceIndexPairs.push_back({distance, i});
+      const auto local_submap_pose2d =
+          cartographer::transform::Project2D(cartographer::transform::ToRigid3(_submap2d_protos[i].local_pose()));
+
+      const transform::Rigid2d trans_node_submap = local_submap_pose2d.inverse() * tmp_pose_estimate;
+      double distance = trans_node_submap.translation().norm();
+      distanceIndexPairs.push_back({distance, i});
   }
 
   std::sort(distanceIndexPairs.begin(), distanceIndexPairs.end(),
@@ -132,19 +122,21 @@ bool fast_scan_matcher_2d_local::MatchInMap(
             });
 
   SlamCommon::Time start_time1 = SlamCommon::TimeNow();
-  // 遍历每张submap
-  LOG_INFO_THROTTLE(1.0, "num_submap_: %d, distanceIndexPairs.size: %d, on_scan: %d, precison_: %d", num_submap_, 
-                distanceIndexPairs.size(), on_scan, precison_);
   std::string candidate_submap_list = "";
   for (int i = 0; i < num_submap_; i++) {
     candidate_submap_list += std::to_string(distanceIndexPairs[i].index);
     candidate_submap_list += " ";
   }
   candidate_submap_list = "candidate_submap_list: " + candidate_submap_list;
-  LOG_INFO_THROTTLE(1.0, "%s", candidate_submap_list.c_str());
+  LOG_ERROR_THROTTLE(1.0,
+                     "LOCAL_CARTO_num_submap_: %d, distanceIndexPairs.size: %d, on_scan: %d, pose_estimate(%f, %f, "
+                     "%f), search(%f, %f), v= %f,  %s",
+                     num_submap_, distanceIndexPairs.size(), on_scan, pose_estimate->translation().x(),
+                     pose_estimate->translation().y(), SlamCommon::RadToDeg(pose_estimate->rotation().angle()),
+                     search_window, angle_window, v,
+                     candidate_submap_list.c_str());
 
   for (int i = 0; i < std::min(num_submap_, static_cast<int>(distanceIndexPairs.size())); ++i) {
-    LOG_INFO_THROTTLE(1.0, "-----------------------------------------------");
     // lyy: if assigned submap_id, just scanmatch this submap
     if (m_assigned_submap_id_flag && i > 0) {
       break;
@@ -156,9 +148,6 @@ bool fast_scan_matcher_2d_local::MatchInMap(
     if (m_assigned_submap_id_flag) {
       index = m_assigned_submap_id;
     }
-
-    LOG_INFO_THROTTLE(1.0, "index: %d, i: %d, distance: %f, m_assigned_submap_id_flag: %d, m_assigned_submap_id: %d",
-                index, i, distanceIndexPairs[i].distance, m_assigned_submap_id_flag, m_assigned_submap_id);
 
     tmp_pose_estimate = *pose_estimate;
     tmp_pose_estimate = local_to_global_vec[index].inverse() * tmp_pose_estimate;
@@ -185,7 +174,12 @@ bool fast_scan_matcher_2d_local::MatchInMap(
                       Eigen::Vector2d(_limits[index].cell_limits().num_y_cells,
                                       _limits[index].cell_limits().num_x_cells);
     const double center_angle = use_initial_guess ? tmp_pose_estimate.rotation().angle() : 0.0;
-    LOG_INFO_THROTTLE(1.0, "use_initial_guess: %d, center pose: (%f, %f, %f)", use_initial_guess, center.x(), center.y(), center_angle);
+    LOG_ERROR_THROTTLE(
+        1.0,
+        "LOCAL_CARTO_steep_426_2_run2_use init guss: %d, center: %f, %f, submap_index(%d), submap_id(%d), "
+        "node_to_submap_distance(%f), index = %d, i = %d, m_assigned_submap_id_flag: %d, m_assigned_submap_id: %d",
+        use_initial_guess, center.x(), center.y(), i, index, distanceIndexPairs[i].distance, index, i,
+        m_assigned_submap_id_flag, m_assigned_submap_id);
 
     const std::vector<candidate_2d::DiscreteScan2D> discrete_scans =
         candidate_2d::DiscretizeScans(_limits[index], rotated_scans, Eigen::Translation2f(center.x(), center.y()));
@@ -195,14 +189,12 @@ bool fast_scan_matcher_2d_local::MatchInMap(
     // penghu 24/4/16
     if (on_scan) {
       std::vector<candidate_2d::Candidate2D> candidates = GenerateExhaustiveSearchCandidates(search_parameters, index);
-      OneScoreCandidates(
-          *_precomputed_probability_grids[index],
-          discrete_scans, &candidates);
+      OneScoreCandidates(*_precomputed_probability_grids[index], discrete_scans, &candidates);
 
-      const candidate_2d::Candidate2D& one_best_candidate =
-          *std::max_element(candidates.begin(), candidates.end());
+      const candidate_2d::Candidate2D& one_best_candidate = *std::max_element(candidates.begin(), candidates.end());
 
       if (one_best_candidate.score <= best_candidate.score) {
+        LOG_DEBUG("one_best_candidate.score(%f) <= min.score(%f)", one_best_candidate.score, best_candidate.score);
         continue;
       }
 
@@ -230,7 +222,7 @@ bool fast_scan_matcher_2d_local::MatchInMap(
     initial_pose = center;
     initial_angle = center_angle;
 
-    if (best_candidate.score > 0.4) break;
+    // if (best_candidate.score > 0.4) break;
   }
   m_best_candidate_score = best_candidate.score;
   m_matched_submap_id = best_submap_index;
@@ -240,19 +232,14 @@ bool fast_scan_matcher_2d_local::MatchInMap(
               initial_pose.x() + best_candidate.x, initial_pose.y() + best_candidate.y,
               57.3*cartographer::common::NormalizeAngleDifference(initial_angle + best_candidate.orientation),
               best_submap_index, best_candidate.score, min_score);
-
   matched_submap_id = best_submap_index;
 
-  // penghu 24/6/22ss
-  if (last_candidate_x == best_candidate.x) {
-    best_candidate.x = 0;
+  if(m_best_candidate_score > 0.5 && best_candidate.x == 0 && best_candidate.y == 0)
+  {
+    singlemap_flag_ = true;
+  }else{
+    singlemap_flag_ = false;
   }
-  // penghu 24/7/16
-  if (last_candidate_y == best_candidate.y) {
-    best_candidate.y = 0;
-  }
-  last_candidate_y = best_candidate.y;
-  last_candidate_x = best_candidate.x;
 
   if (precison_) {
     *score = best_candidate.score;

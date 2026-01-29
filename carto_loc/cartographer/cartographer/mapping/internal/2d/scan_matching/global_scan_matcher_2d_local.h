@@ -48,6 +48,10 @@ public:
         return _faster_csm_ptr->GetMatchedSubmapId();
     }
 
+    bool GetSingleMapFlag(){
+        return _faster_csm_ptr->GetSingleMapFlag();
+    }
+
   private:
     bool LoadSubmaps(const proto::LocalTrajectoryBuilderOptions2D& options,
                      const std::string& pbfilepath,
@@ -66,8 +70,8 @@ public:
     std::unique_ptr<
         cartographer::mapping::scan_matching::fast_scan_matcher_2d_local> _faster_csm_ptr;
 
-    int submap_id_;//lyy
-    bool assigned_flag_;//lyy
+    int submap_id_;
+    bool assigned_flag_;
 };
 
 }

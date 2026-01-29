@@ -70,6 +70,10 @@ public:
         return m_matched_submap_id;
     }
 
+    bool GetSingleMapFlag(){
+        return singlemap_flag_;
+    }
+
 private:
     std::vector<candidate_2d::Candidate2D> GenerateLowestResolutionCandidates(
             const candidate_2d::SearchParameters& search_parameters,
@@ -135,6 +139,7 @@ private:
     int num_submap_ = 0;
     float m_best_candidate_score = 0.0f;
     int m_matched_submap_id = -1;
+    bool singlemap_flag_ = false;
 
 };
 

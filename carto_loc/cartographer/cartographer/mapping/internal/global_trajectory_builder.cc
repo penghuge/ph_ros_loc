@@ -91,17 +91,19 @@ public:
             //                                 NodeId(matched_submap_id, tmp_node_index), 
             //                                 nullptr, 
             //                                 {}});
-            std::unique_ptr<InsertionResult> insertion_result =
-                absl::make_unique<InsertionResult>(InsertionResult{
-                    NodeId(matched_submap_id, tmp_node_index), nullptr,
-                    std::vector<std::shared_ptr<const Submap>>(
-                    matching_result->insertion_result->insertion_submaps.begin(),
-                    matching_result->insertion_result->insertion_submaps.end())});
-
-            //如果激光数据成功插入submap中
+            std::unique_ptr<InsertionResult> insertion_result;
             if (matching_result->insertion_result != nullptr) {
+                insertion_result = absl::make_unique<InsertionResult>(InsertionResult{
+                    NodeId(matched_submap_id, tmp_node_index),
+                    nullptr,
+                    std::vector<std::shared_ptr<const Submap>>(
+                        matching_result->insertion_result->insertion_submaps.begin(),
+                        matching_result->insertion_result->insertion_submaps.end())});
                 //激光插入计数加1
                 kLocalSlamInsertionResults->Increment();
+            } else {
+                insertion_result = absl::make_unique<InsertionResult>(InsertionResult{
+                    NodeId(matched_submap_id, tmp_node_index), nullptr, {}});
             }
             if (local_slam_result_callback_) {
                 local_slam_result_callback_(

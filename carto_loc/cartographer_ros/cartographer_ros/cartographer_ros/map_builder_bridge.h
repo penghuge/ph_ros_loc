@@ -39,7 +39,7 @@
 #include "nav_msgs/OccupancyGrid.h"
 #include "cartographer/common/const_value.h"
 #include <common_msgs/SetPose.h>
-#include "cartographer/cartographer/common/file_interface.h"
+#include "cartographer/common/file_interface.h"
 
 // Abseil unfortunately pulls in winnt.h, which #defines DELETE.
 // Clean up to unbreak visualization_msgs::Marker::DELETE.
